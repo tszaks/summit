@@ -1,0 +1,26 @@
+; macOS sandbox-exec profile for ONE grader call. Fill the three placeholders, save as policy.sb.
+; Reads of your home folder are denied except the Codex login files the CLI needs.
+; Network is denied except a local allowlist proxy (see judges.md, "Subscription mode").
+(version 1)
+(allow default)
+(deny network-outbound)
+(allow network-outbound (remote tcp "localhost:__PROXY_PORT__"))
+(deny file-read-data
+ ; Codex history and memory must never be readable by a grader
+ (subpath "__HOME__/.codex/sessions")
+ (subpath "__HOME__/.codex/archived_sessions")
+ (subpath "__HOME__/.codex/memories")
+ (subpath "__HOME__/.codex/skills")
+ (subpath "__HOME__/.codex/attachments")
+ (subpath "__HOME__/.codex/logs")
+ (subpath "__HOME__/.codex/worktrees")
+ (subpath "__HOME__/.codex/prompts")
+ (subpath "__HOME__/.codex/secrets")
+ ; everything else under home (your repo, cases, answer keys) except the Codex config dir
+ (require-all (subpath "__HOME__")
+              (require-not (subpath "__HOME__/.codex"))
+              (require-not (subpath "__IO_DIR__")))
+ ; other grader folders and scratch space
+ (require-all (subpath "/private/tmp")
+              (require-not (subpath "__CWD__"))
+              (require-not (subpath "__IO_DIR__"))))
