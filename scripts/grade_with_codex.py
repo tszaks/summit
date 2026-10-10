@@ -54,6 +54,9 @@ def clean_env():
 
 
 def grade(model, payload, label):
+    if any(s in model.lower() for s in ("claude", "anthropic")):
+        raise ValueError("Claude judges never run on a subscription; use API mode with "
+                         "ANTHROPIC_API_KEY (see judges.md)")
     if ALLOWED_MODELS and model not in ALLOWED_MODELS:
         raise ValueError("model not on the approved judge list")
     env = clean_env()

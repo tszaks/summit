@@ -28,12 +28,26 @@ Every skill sends you to `judges.md` for judge setup. Read the section for the c
 
 ## Prerequisites to check before any paid call
 - The product can be called from a script (its real code path, not a copy of its prompt). If not, build a small adapter first.
+- Claude judges only: `ANTHROPIC_API_KEY` is set. Check with `[ -n "$ANTHROPIC_API_KEY" ]`. A Claude subscription is never a substitute.
 - An OpenAI API key is set for the product model. Check with `[ -n "$OPENAI_API_KEY" ]`. Never echo it.
 - Subscription mode only: the `codex` CLI is installed and logged in with ChatGPT (`codex login status`). Your user must confirm their plan terms allow automated grading. Read `judges.md`.
 - Python 3 is available. Run `python3 scripts/<name>.py --help` to see what each script does.
 - A dollar cap from the user. If they gave none, ask.
 
+## Which subscription may run judges
+The rule depends on the company that makes the judge model. It does not depend on the product model.
+
+| Judge model | Subscription allowed? | How to run it |
+| --- | --- | --- |
+| OpenAI (GPT) | Yes, a ChatGPT plan through `codex exec` | Subscription mode or API mode |
+| Claude (Anthropic) | **No. Never.** | Anthropic API key only, billed at API prices |
+
+- Never run a Claude judge through a Claude subscription: not `claude -p`, not Claude Code, not the Claude app, not any script that drives them. Anthropic does not allow automated use of a subscription, and it bans the account. This has already happened to one account.
+- A Claude judge needs `ANTHROPIC_API_KEY` set (check with `[ -n "$ANTHROPIC_API_KEY" ]`). If it is not set, stop and ask. Do not fall back to a subscription.
+- The product model always runs on its own provider's API key, in both modes.
+
 ## Hard rules
+- Never run a Claude model through a Claude subscription for judging or any other automated call. Claude judges use an Anthropic API key. See the section above.
 - Never print, log, or commit a secret, key, or login file.
 - Enforce the dollar cap in code with `scripts/budget.py`. A cap in a prompt is not a cap.
 - The held-out set gets one look. After it changes any decision it is no longer held out.
