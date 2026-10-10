@@ -6,9 +6,19 @@ Fill in call_judge() with your own client call. It must return the parsed JSON g
 outside the optimizer's reach. Run `python two_judges.py controls controls.json case.json`
 before trusting any score.
 """
-import json, sys
+import json, os, sys
 
 JUDGES = ["JUDGE_A_MODEL", "JUDGE_B_MODEL"]  # two different models; set real names
+
+def is_claude(model):
+    return any(s in model.lower() for s in ("claude", "anthropic"))
+
+def check_billing(model):
+    """Claude judges run on an Anthropic API key only, never a Claude subscription
+    (claude -p, Claude Code): Anthropic bans accounts for that. See judges.md."""
+    if is_claude(model) and not os.environ.get("ANTHROPIC_API_KEY"):
+        raise RuntimeError(f"{model} is a Claude judge: set ANTHROPIC_API_KEY. "
+                           "Never fall back to a Claude subscription.")
 
 def call_judge(model, prompt):
     raise NotImplementedError("wrap your API client here; use structured output with the schema")
@@ -17,7 +27,9 @@ def passes(g):
     return (all(g[k] >= 3 for k in ("correctness", "grounding")) and not g["criticalFailures"])
 
 def grade_both(prompt):
-    out = {m: call_judge(m, prompt) for m in JUDGES}
+    for m in JUDGES:
+        check_billing(m)
+    out ={m: call_judge(m, prompt) for m in JUDGES}
     verdicts = {m: passes(r["grade"]) for m, r in out.items()}
     return {"passed": all(verdicts.values()), "disagree": len(set(verdicts.values())) > 1,
             "judges": out}

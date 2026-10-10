@@ -18,6 +18,8 @@ You have an LLM product (a chat assistant, an agent, a prompt plus tools) and yo
 
 In both modes your product's own model calls bill to its provider's API. Subscription mode runs the judges through `codex exec`, so judging adds no API charge. Check your plan terms first. See `judges.md`.
 
+**Claude judges need an Anthropic API key.** Only OpenAI judges may run on a subscription (ChatGPT through `codex exec`). Never run Claude judges through a Claude subscription (`claude -p`, Claude Code): Anthropic bans accounts for automated subscription use. This is true for any product model.
+
 ## How to use it
 
 Point your agent at this repo and say: "Read AGENTS.md in this repo and set it up for my project." The agent asks you two questions (your goal, your billing) and runs the matching prompt. You can also paste a file from `prompts/` yourself.

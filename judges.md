@@ -7,6 +7,14 @@ Two billing modes. Choose one. The product model bills to the OpenAI API in both
 | API | OpenAI API | API charges, inside your dollar cap |
 | Subscription | `codex exec` signed in with ChatGPT | No API charge. Uses your plan allowance. |
 
+## Claude judges: API key only
+Subscription mode is for OpenAI judges on a ChatGPT plan. There is no Claude subscription mode, and there will not be one.
+
+- A Claude judge runs in API mode only, on an Anthropic API key, at API prices.
+- Never run a Claude judge through `claude -p`, Claude Code, the Claude app, or any script that drives a Claude subscription. Anthropic bans accounts for automated use of a subscription.
+- This is true for any product model. If the product is a Claude model, OpenAI judges may still use the ChatGPT plan. If a judge is a Claude model, it always needs an API key.
+- `scripts/two_judges.py` refuses a Claude judge when `ANTHROPIC_API_KEY` is not set. `scripts/grade_with_codex.py` refuses any Claude model.
+
 Both modes use the same rules:
 - Use two judges. Use two different models.
 - A case passes only if both judges pass.
