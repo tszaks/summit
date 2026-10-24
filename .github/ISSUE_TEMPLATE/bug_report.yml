@@ -1,0 +1,52 @@
+name: Bug report
+description: Something in Summit does not work as it should
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Do not paste API keys, login files, or private test cases. If a script printed a secret, report it through the Security tab instead.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What did you do, what did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: The prompt or script you ran, and the command line.
+      placeholder: |
+        1. Ran prompts/... in ...
+        2. Ran python3 scripts/... with ...
+        3. ...
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Billing mode
+      options:
+        - API
+        - ChatGPT subscription (codex exec)
+        - Not applicable
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: OS, Python version, and Codex version
+      description: Run `python3 --version` and `codex --version`.
+      placeholder: "macOS 26.5, Python 3.12, codex 0.x"
+  - type: input
+    id: agent
+    attributes:
+      label: Which coding agent were you using?
+      placeholder: "Codex, Claude Code, ..."
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else
+      description: Logs (with secrets removed) or notes.

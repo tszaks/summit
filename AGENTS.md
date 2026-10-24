@@ -57,7 +57,24 @@ The rule depends on the company that makes the judge model. It does not depend o
 - Do not deploy, merge, or write to production. Leave that to your user.
 - Do not put private cases or answer keys where the optimizer can read them.
 
-## Layout
+## Commands
+There is no build and no test suite. CI compiles every script and runs each with `--help`:
+```sh
+for f in scripts/*.py; do python3 -m py_compile "$f" && python3 "$f" --help > /dev/null || echo "FAIL $f"; done
+```
+Scripts use only the Python standard library. Do not add dependencies.
+
+## Code map
 - `skills/` method, billing-neutral. `judges.md` the two billing modes.
 - `scripts/` shared code. `templates/` contract, schema, controls, macOS sandbox policy.
 - `prompts/` the six copy-paste prompts. `SOURCES.md` references.
+- `scripts/budget.py` dollar cap with reserve and settle. `scripts/classify.py` sorts attempts into pass, product failure, infrastructure failure, ungraded.
+- `scripts/two_judges.py` template for two API judges. `scripts/grade_with_codex.py` one judge call through `codex exec`. `scripts/calibrate.py` calibration gate.
+- `scripts/isolation_check.py` canary check for the grader. `scripts/allowlist_proxy.py` host allowlist proxy for the macOS sandbox.
+
+## Conventions when editing this repo
+- Match the surrounding code and wording. Short, plain sentences. No em dashes.
+- Keep skills, prompts, `AGENTS.md`, and `judges.md` consistent with each other. If a rule changes in one, change it in all.
+- Add a line under `[Unreleased]` in `CHANGELOG.md` for user-visible changes.
+- Do not weaken a hard rule above. Do not add a path that drives a Claude subscription.
+- See `CONTRIBUTING.md` for the pull request checklist.
